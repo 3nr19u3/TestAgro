@@ -1,7 +1,5 @@
 package com.example.testagroproject.ui.home
 
-import android.content.Context
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,18 +8,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.example.testagroproject.Items
-import com.example.testagroproject.R
 import com.example.testagroproject.databinding.FragmentHomeBinding
-import com.google.android.material.textfield.TextInputEditText
-import java.io.FileOutputStream
-import java.text.SimpleDateFormat
-import java.util.*
+
 
 class HomeFragment : Fragment() {
 
@@ -43,6 +37,8 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        val bundle = Bundle()
+
         val btn_cargar: Button = binding.btnCargar
         val imgView: ImageView = binding.imgvShow
         val imgMinView1: ImageView = binding.imageView
@@ -53,7 +49,7 @@ class HomeFragment : Fragment() {
         val imgMinView6: ImageView = binding.imageView5
         val url : EditText = binding.edtextUrl
         val tamano : Int = 6
-        var cont : Int =0
+        var cont : Int = 0
 
         btn_cargar.setOnClickListener{
             val direccion = url.text.toString()
@@ -93,16 +89,24 @@ class HomeFragment : Fragment() {
                             llenaArray(direccion, imgMinView6)
                             cont++
                             break;
+                        }else {
+                            Toast.makeText(
+                                activity,
+                                "Numero de valores maximos alcanzados!!",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
+                    bundle.putString("img$cont",direccion)
+                    parentFragmentManager.setFragmentResult("key", bundle)
                 }else{
                     Log.i("**ERROR**", "Array Vacio")
                 }
 
-
             }catch(e: Exception){
                 e.printStackTrace()
             }
+
         }
 
         return root
@@ -111,6 +115,7 @@ class HomeFragment : Fragment() {
     private fun llenaArray(item: String, imv: ImageView) {
         Glide.with(this).load(item).placeholder(android.R.drawable.ic_delete).into(imv)
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
